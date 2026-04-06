@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 정부 정책자금 통합 자가진단</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f1f5f9; }
+        .glass-morphism { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .step-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .progress-ring__circle { transition: stroke-dashoffset 0.5s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .hover-lift { transition: transform 0.2s ease; }
+        .hover-lift:hover { transform: translateY(-3px); }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">2026 정책자금 지원센터</h1>
+                    <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Digital Self-Diagnosis System</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full italic">실시간 예산 반영 중</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+        
+        <!-- Header Section -->
+        <div class="mb-12 text-center">
+            <h2 class="text-4xl font-extrabold text-slate-900 mb-4">정부 지원금, 우리 회사도 받을 수 있을까?</h2>
+            <p class="text-slate-500 text-lg max-w-2xl mx-auto">2026년 개정된 정책자금 심사 기준에 따른 8가지 핵심 지표를 확인하고,<br>귀사의 승인 가능성 점수를 시각화하여 보여드립니다.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            
+            <!-- Left: Diagnosis Questionnaire -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="glass-morphism rounded-[2rem] shadow-xl p-8 md:p-10 border border-slate-200 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm italic">Q</span>
+                            자가 진단 체크리스트
+                        </h3>
+                        <div id="stepIndicator" class="text-sm font-bold text-blue-600">Step 1 / 8</div>
+                    </div>
+
+                    <div id="quizContainer" class="min-h-[400px]">
+                        <!-- Question Item Template -->
+                        <div id="q1" class="quiz-step step-transition">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">1. 현재 국세, 지방세 또는 4대 보험 체납 사실이 있습니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(1, 0)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-red-500 hover:bg-red-50 transition-all group">
+                                    <span class="block font-bold text-slate-900 group-hover:text-red-700">예, 현재 체납 중이거나 최근 6개월 내 이력이 있습니다.</span>
+                                    <span class="text-sm text-slate-500">※ 정책자금 신청 시 가장 강력한 결격 사유입니다.</span>
+                                </button>
+                                <button onclick="nextStep(1, 20)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                                    <span class="block font-bold text-slate-900 group-hover:text-blue-700">아니오, 체납 사실이 전혀 없습니다.</span>
+                                    <span class="text-sm text-slate-500">※ 정상적인 신청 가능 상태입니다.</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q2" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">2. 우리 회사의 최근 재무제표상 부채비율은?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(2, 20)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">200% 미만 (매우 우수)</span>
+                                </button>
+                                <button onclick="nextStep(2, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">200% ~ 500% (보통)</span>
+                                </button>
+                                <button onclick="nextStep(2, 0)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-red-500 hover:bg-red-50 transition-all">
+                                    <span class="block font-bold text-slate-900">500% 초과 또는 자본잠식 (위험)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q3" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">3. 기업 부설 연구소 또는 벤처인증/이노비즈 등을 보유하고 있습니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(3, 15)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">네, 인증을 보유하고 있습니다. (우대)</span>
+                                </button>
+                                <button onclick="nextStep(3, 0)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">아니오, 현재 보유하고 있지 않습니다.</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q4" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">4. 대표자의 동종 업력 경력은 얼마나 됩니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(4, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">3년 이상 숙련 (전문가)</span>
+                                </button>
+                                <button onclick="nextStep(4, 0)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">3년 미만 (신규 사업가)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q5" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">5. 특허권, 상표권 등 지식재산권(IP) 보유 현황은?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(5, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">1건 이상 등록/보유 중</span>
+                                </button>
+                                <button onclick="nextStep(5, 0)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">보유하고 있지 않음</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q6" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">6. 최근 1년 매출이 전년 대비 성장했습니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(6, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">10% 이상 유의미하게 성장</span>
+                                </button>
+                                <button onclick="nextStep(6, 5)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">유지 또는 소폭 감소</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q7" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">7. 현재 상시 근로자 수는 몇 명입니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(7, 5)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">5인 이상 (중소기업 대상군)</span>
+                                </button>
+                                <button onclick="nextStep(7, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all">
+                                    <span class="block font-bold text-slate-900">5인 미만 (소상공인 대상군)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="q8" class="quiz-step hidden step-transition opacity-0 translate-y-4">
+                            <p class="text-xl font-bold text-slate-800 mb-6 leading-snug">8. 자금의 주요 사용 용도는 무엇입니까?</p>
+                            <div class="grid grid-cols-1 gap-4">
+                                <button onclick="nextStep(8, 10)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900 font-bold">시설자금 (기계, 공장, 사업장 매입)</span>
+                                    <span class="text-sm text-slate-500">※ 한도가 높고 금리가 가장 저렴합니다.</span>
+                                </button>
+                                <button onclick="nextStep(8, 5)" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                    <span class="block font-bold text-slate-900">운영자금 (원자재, 인건비, 마케팅)</span>
+                                    <span class="text-sm text-slate-500">※ 유동성 확보를 위한 범용 자금입니다.</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Final Completion Message -->
+                        <div id="quizComplete" class="hidden text-center py-8 animate-fade-in">
+                            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <h4 class="text-2xl font-bold text-slate-900 mb-2">진단이 완료되었습니다!</h4>
+                            <p class="text-slate-500 mb-8">분석된 리포트를 확인하고 전문가와 상담해 보세요.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <button onclick="resetQuiz()" class="w-full sm:w-auto px-8 py-4 bg-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-slate-300 transition-all flex items-center justify-center">
+                                    <i class="fas fa-redo-alt mr-2"></i> 자가진단 다시하기
+                                </button>
+                                <a href="tel:010-7526-1826" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center">
+                                    <i class="fas fa-phone-alt mr-2"></i> 전문가 컨설팅 문의
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="progressArea" class="mt-10 h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-500" style="width: 12.5%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Dynamic Results Visualizer -->
+            <div class="lg:col-span-5">
+                <div class="sticky top-28 space-y-6">
+                    <!-- Real-time Score Card -->
+                    <div class="bg-white rounded-[2rem] shadow-xl p-8 border border-slate-200 text-center overflow-hidden relative">
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">지원 가능성 점수</h4>
+                        
+                        <div class="relative inline-flex items-center justify-center mb-6">
+                            <svg class="w-48 h-48">
+                                <circle cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" class="text-slate-100"></circle>
+                                <circle cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" stroke-dasharray="553" stroke-dashoffset="553" id="scoreRing" class="progress-ring__circle text-blue-600"></circle>
+                            </svg>
+                            <div class="absolute flex flex-col items-center">
+                                <span id="displayScore" class="text-6xl font-black text-slate-900">0</span>
+                                <span class="text-xs font-bold text-slate-400">/ 100 PTS</span>
+                            </div>
+                        </div>
+
+                        <div id="scoreLabel" class="text-lg font-bold text-slate-500">진단 진행 중...</div>
+                        
+                        <div id="resultStatus" class="mt-8 hidden animate-fade-in">
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-left space-y-4">
+                                <h5 class="font-bold text-slate-800 border-b pb-2">최적 추천 기관</h5>
+                                <div id="recAgency" class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center"><i class="fas fa-university text-sm"></i></div>
+                                    <span class="font-bold text-indigo-700">분석 중...</span>
+                                </div>
+                                <div id="recFund" class="text-sm text-slate-600 leading-relaxed italic">
+                                    귀하의 답변을 바탕으로 가장 승인 확률이 높은 자금을 매칭 중입니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trend Card (Dyanmic Update based on Results) -->
+                    <div id="trendCard" class="bg-indigo-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all duration-500">
+                        <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl transition-transform duration-500" id="trendIcon"><i class="fas fa-lightbulb"></i></div>
+                        <h5 class="font-bold mb-2 flex items-center"><i class="fas fa-star text-yellow-400 mr-2"></i> 2026 심사 트렌드</h5>
+                        <div id="trendContent">
+                            <p class="text-xs text-indigo-200 leading-relaxed">
+                                올해부터는 단순 재무제표보다 **ESG 경영** 및 **디지털 전환(DX)** 지표가 가점으로 작용합니다. AI 설비 도입 시 금리 우대 폭이 가장 큽니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Comparison Table -->
+        <div class="mt-20">
+            <h3 class="text-2xl font-bold text-slate-900 mb-8 flex items-center">
+                <i class="fas fa-table-list mr-3 text-blue-600"></i> 기관별 핵심 조건 비교 (2026)
+            </h3>
+            <div class="overflow-hidden bg-white rounded-3xl shadow-lg border border-slate-200">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-5 text-sm font-bold text-slate-500 uppercase">자금 출처</th>
+                            <th class="px-6 py-5 text-sm font-bold text-slate-500 uppercase">최대 한도</th>
+                            <th class="px-6 py-5 text-sm font-bold text-slate-500 uppercase">평균 금리</th>
+                            <th class="px-6 py-5 text-sm font-bold text-slate-500 uppercase">핵심 타겟</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="font-bold text-slate-900">소상공인시장진흥공단</div>
+                                <div class="text-[10px] text-slate-400">직접/대리대출 혼합</div>
+                            </td>
+                            <td class="px-6 py-5 font-bold text-blue-600">최대 10억</td>
+                            <td class="px-6 py-5 text-sm">연 3.2% ~ 4.1%</td>
+                            <td class="px-6 py-5 text-sm">상시 근로자 5인 미만</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="font-bold text-slate-900">중소벤처기업진흥공단</div>
+                                <div class="text-[10px] text-slate-400">정책자금 직접대출</div>
+                            </td>
+                            <td class="px-6 py-5 font-bold text-indigo-600">최대 60억</td>
+                            <td class="px-6 py-5 text-sm">정책 기준금리 (변동)</td>
+                            <td class="px-6 py-5 text-sm">업력 7년 미만 창업기업</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="font-bold text-slate-900">신용/기술보증기금</div>
+                                <div class="text-[10px] text-slate-400">금융기관 보증서 연계</div>
+                            </td>
+                            <td class="px-6 py-5 font-bold text-emerald-600">매출 비례</td>
+                            <td class="px-6 py-5 text-sm">시중금리 - 이차보전</td>
+                            <td class="px-6 py-5 text-sm">담보 부족 성장 유망기업</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+      <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 pt-20 pb-12 mt-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+
+            <!-- QR Upload Section with Preview -->
+            <div class="mb-10 group">
+                <input type="file" id="qrInput" accept="image/*" class="hidden" onchange="handleQRUpload(event)">
+                <label for="qrInput" class="cursor-pointer inline-block">
+                    <div id="qrPlaceholder" class="w-36 h-36 bg-slate-100 rounded-[2.5rem] flex flex-col items-center justify-center mx-auto mb-6 border-2 border-dashed border-slate-300 overflow-hidden shadow-inner transition-all group-hover:border-blue-400 group-hover:bg-blue-50 relative">
+                        <!-- Preview Image -->
+                        <img id="qrPreview" src="" alt="Contact QR" class="hidden w-full h-full object-cover">
+                        <!-- Upload Indicator Icon -->
+                        <div id="qrUploadIcon" class="flex flex-col items-center text-slate-400 group-hover:text-blue-500">
+                            <i class="fas fa-qrcode text-3xl mb-2"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-wider">QR 코드 업로드</span>
+                        </div>
+                        <!-- Hover Overlay (Visible only after upload) -->
+                        <div id="qrHoverOverlay" class="hidden absolute inset-0 bg-black/40 items-center justify-center text-white text-xs font-bold opacity-0 hover:opacity-100 transition-opacity">
+                            변경하기
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 mb-16 leading-tight">
+                #선착순마감 #예산소진주의 #빠른상담필수 #자가진단서비스
+            </p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 mb-16 leading-tight">
+                준비가 된 기업에게는 기회가 찾아옵니다. <br/> 지금 바로 무료 컨설팅을 신청하세요!
+            </p>
+
+            <div class="text-left p-8 sm:p-10 bg-slate-50 rounded-[2.5rem] border border-slate-200/50 mb-12">
+                <h6 class="text-xs font-black text-blue-800 mb-5 uppercase tracking-widest flex items-center">
+                    <i class="fas fa-fingerprint mr-2"></i> Security & Privacy Policy
+                </h6>
+                <div class="space-y-4 text-[11px] sm:text-[13px] text-slate-500 font-medium leading-relaxed">
+                    <p>본 자가진단 서비스에 입력된 정보는 상담 목적 이외에 절대 사용되지 않으며, 암호화 처리 후 일정 기간 뒤 자동 파기됩니다. <br/> 승인 확률은 입력하신 데이터를 근거로 한 예측치이며, 최종 승인은 각 기관의 심사 규정에 따릅니다.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        let totalScore = 0;
+        const totalSteps = 8;
+        const scoreRing = document.getElementById('scoreRing');
+        const displayScore = document.getElementById('displayScore');
+        const scoreLabel = document.getElementById('scoreLabel');
+        const progressBar = document.getElementById('progressBar');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const trendCard = document.getElementById('trendCard');
+        const trendContent = document.getElementById('trendContent');
+        const trendIcon = document.getElementById('trendIcon');
+        const circumference = 2 * Math.PI * 88;
+
+        // QR Code Upload Handler
+        function handleQRUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('qrPreview');
+                    const uploadIcon = document.getElementById('qrUploadIcon');
+                    const hoverOverlay = document.getElementById('qrHoverOverlay');
+                    const placeholder = document.getElementById('qrPlaceholder');
+
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    uploadIcon.classList.add('hidden');
+                    hoverOverlay.classList.remove('hidden');
+                    hoverOverlay.classList.add('flex');
+                    
+                    // Update styling
+                    placeholder.classList.remove('border-dashed');
+                    placeholder.classList.add('border-solid', 'border-blue-500');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateUI() {
+            const offset = circumference - (totalScore / 100) * circumference;
+            scoreRing.style.strokeDashoffset = offset;
+            displayScore.innerText = totalScore;
+
+            if (currentStep <= totalSteps) {
+                const progressPercent = (currentStep / totalSteps) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                stepIndicator.innerText = `Step ${currentStep} / ${totalSteps}`;
+            }
+
+            // Results Update Logic
+            if (totalScore >= 70) {
+                scoreLabel.innerText = "승인 확률: 매우 높음";
+                scoreLabel.className = "text-lg font-bold text-emerald-600";
+                scoreRing.style.color = "#10b981"; 
+                
+                trendCard.className = "bg-emerald-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all duration-500";
+                trendIcon.innerHTML = '<i class="fas fa-rocket"></i>';
+                trendContent.innerHTML = `
+                    <p class="text-xs text-emerald-100 leading-relaxed">
+                        올해부터는 단순 재무제표보다 **ESG 경영** 및 **디지털 전환(DX)** 지표가 가점으로 작용합니다. 귀사는 기본 요건이 우수하므로, **AI 설비 도입** 시 발생하는 최고 수준의 금리 우대를 노리는 것이 가장 유리합니다.
+                    </p>
+                `;
+            } else if (totalScore >= 40) {
+                scoreLabel.innerText = "승인 확률: 보통 (보완 필요)";
+                scoreLabel.className = "text-lg font-bold text-blue-600";
+                scoreRing.style.color = "#2563eb";
+                
+                trendCard.className = "bg-indigo-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all duration-500";
+                trendIcon.innerHTML = '<i class="fas fa-shield-alt"></i>';
+                trendContent.innerHTML = `
+                    <p class="text-xs text-indigo-100 leading-relaxed">
+                        올해부터는 단순 재무제표보다 **ESG 경영** 및 **디지털 전환(DX)** 지표가 가점으로 작용합니다. 부족한 점수를 채우기 위해 **AI 소프트웨어 도입**을 통한 DX 인증을 확보하여 심사 문턱을 넘는 전략이 필요합니다.
+                    </p>
+                `;
+            } else {
+                scoreLabel.innerText = "승인 확률: 낮음 (리스크 관리)";
+                scoreLabel.className = "text-lg font-bold text-red-500";
+                scoreRing.style.color = "#ef4444";
+
+                trendCard.className = "bg-slate-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all duration-500";
+                trendIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                trendContent.innerHTML = `
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        올해부터는 단순 재무제표보다 **ESG 경영** 및 **디지털 전환(DX)** 지표가 가점으로 작용하지만, 현재 귀사는 **기본 요건(체납/부채) 해결**이 최우선입니다. 결격 사유 해소 후 AI 설비 도입 가점을 노려야 승인 가능성이 생깁니다.
+                    </p>
+                `;
+            }
+        }
+
+        function nextStep(step, score) {
+            totalScore += score;
+            updateUI();
+
+            const currentQ = document.getElementById(`q${step}`);
+            currentQ.classList.add('opacity-0', '-translate-y-4');
+
+            setTimeout(() => {
+                currentQ.classList.add('hidden');
+                currentStep++;
+
+                if (currentStep <= totalSteps) {
+                    const nextQ = document.getElementById(`q${currentStep}`);
+                    nextQ.classList.remove('hidden');
+                    void nextQ.offsetWidth;
+                    nextQ.classList.remove('opacity-0', 'translate-y-4');
+                } else {
+                    showFinalResult();
+                }
+            }, 300);
+        }
+
+        function showFinalResult() {
+            document.getElementById('resultStatus').classList.remove('hidden');
+            document.getElementById('quizComplete').classList.remove('hidden');
+            document.getElementById('progressArea').classList.add('hidden');
+            
+            const agency = document.getElementById('recAgency').querySelector('span');
+            const fundDesc = document.getElementById('recFund');
+            
+            if (totalScore >= 80) {
+                agency.innerText = "중진공 (창업기업지원자금)";
+                fundDesc.innerHTML = "<strong>축하합니다!</strong> 귀사는 재무 건전성과 인증 요건을 모두 충족합니다. 지금 바로 '사업계획서' 작성 고도화 단계로 넘어가셔도 좋습니다.";
+            } else if (totalScore >= 50) {
+                agency.innerText = "신용보증기금 (보증서 대출)";
+                fundDesc.innerHTML = "직접 대출보다는 <strong>보증서 기반 은행 대출</strong>이 더 유리할 수 있습니다. 부족한 담보력을 보증서로 보완하세요.";
+            } else if (totalScore > 20) {
+                agency.innerText = "소진공 (소상공인 정책자금)";
+                fundDesc.innerHTML = "상시 근로자 5인 미만이라면 <strong>소상공인 전용 자금</strong>을 먼저 공략하십시오. 경영안정자금이 적합합니다.";
+            } else {
+                agency.innerText = "상담 필요 (부적합)";
+                agency.className = "font-bold text-red-600";
+                fundDesc.innerHTML = "체납 또는 과도한 부채 등으로 인해 현재 정책자금 승인이 어려울 수 있습니다. 전문가 상담을 권장합니다.";
+            }
+            
+            stepIndicator.innerText = "진단 완료";
+        }
+
+        function resetQuiz() {
+            currentStep = 1;
+            totalScore = 0;
+
+            document.getElementById('quizComplete').classList.add('hidden');
+            document.getElementById('resultStatus').classList.add('hidden');
+            document.getElementById('progressArea').classList.remove('hidden');
+            
+            document.querySelectorAll('.quiz-step').forEach(q => {
+                q.classList.add('hidden', 'opacity-0', 'translate-y-4');
+            });
+
+            const firstQ = document.getElementById('q1');
+            firstQ.classList.remove('hidden');
+            void firstQ.offsetWidth;
+            firstQ.classList.remove('opacity-0', 'translate-y-4');
+
+            updateUI();
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
